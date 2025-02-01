@@ -6,6 +6,8 @@
 package javafxapplication1.CPU;
 
 import javafx.scene.shape.Rectangle;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  *
@@ -127,242 +129,60 @@ public class ControlUnit {
     }
 
     public static Instruction getOpcode(Register reg) {
-        String st = reg.getBinaryValueAsString();
-        String opcodeSt = "" + st.charAt(0) + st.charAt(1) + st.charAt(2) + st.charAt(3);
-        switch (opcodeSt) {
-            case ("0000"):
-                return Instruction.LOAD_D;
-            case ("0001"):
-                return Instruction.LOAD_B;
-            case ("0010"):
-                return Instruction.LOAD_A;
-            case ("0011"):
-                return Instruction.LOAD_C;
-            case ("0100"):
-                return Instruction.STORE_A;
-            case ("0101"):
-                return Instruction.STORE_B;
-            case ("0110"):
-                return Instruction.STORE_C;
-            case ("0111"):
-                return Instruction.STORE_D;
-            case ("1000"):
-                return Instruction.ADD;
-            case ("1001"):
-                return Instruction.SUB;
-            case ("1010"):
-                return Instruction.JUMP;
-            case ("1011"):
-                return Instruction.JUMP_NEG;
-            case ("1100"):
-                return Instruction.JUMP_ZRO;
-            case ("1101"):
-                return Instruction.JUMP_ABV;
-            case ("1110"):
-                return Instruction.JUMP_BLW;
-            case ("1111"):
-                return Instruction.HALT;
-            default:
-                return null;
-        }
+        int value = Byte.toUnsignedInt(reg.getValue());
+        value = (value>>4);
+        return Instruction.fromValue(value);
     }
 
     public static int stringBinaryToInt(String st) {
-        switch (st) {
-            case "0000":
-                return 0;
-            case "0001":
-                return 1;
-            case "0010":
-                return 2;
-            case "0011":
-                return 3;
-            case "0100":
-                return 4;
-            case "0101":
-                return 5;
-            case "0110":
-                return 6;
-            case "0111":
-                return 7;
-            case "1000":
-                return 8;
-            case "1001":
-                return 9;
-            case "1010":
-                return 10;
-            case "1011":
-                return 11;
-            case "1100":
-                return 12;
-            case "1101":
-                return 13;
-            case "1110":
-                return 14;
-            case "1111":
-                return 15;
-            default:
-                return 0;
-        }
+       return Integer.parseInt(st,2);
 
     }
 
     public static String getInstructionAsString(NumberingSystem ns, Register reg) {
-        Instruction opcode = getOpcode(reg);
-        String instruction = opcode.toString();
-        if (instruction.equals("ADD") || instruction.equals("SUB")) {
+            Instruction opcode = getOpcode(reg);
             String st = reg.getBinaryValueAsString();
-            String op1 = "" + st.charAt(4) + st.charAt(5);
-            String op2 = "" + st.charAt(6) + st.charAt(7);
-            if (ns == NumberingSystem.OPCbin) {
-                instruction = instruction + " " + op1 + " " + op2;
-            } else if (ns == NumberingSystem.OPCdec) {
-                switch (op1) {
-                    case "00":
-                        instruction = instruction + " " + "A";
-                        switch (op2) {
-                            case "00":
-                                instruction = instruction + " " + "A";
-                                break;
-                            case "01":
-                                instruction = instruction + " " + "B";
-                                break;
-                            case "10":
-                                instruction = instruction + " " + "C";
-                                break;
-                            case "11":
-                                instruction = instruction + " " + "D";
-                                break;
-                            default:
-                                break;
-                        }
-                        break;
-                    case "01":
-                        instruction = instruction + " " + "B";
-                        switch (op2) {
-                            case "00":
-                                instruction = instruction + " " + "A";
-                                break;
-                            case "01":
-                                instruction = instruction + " " + "B";
-                                break;
-                            case "10":
-                                instruction = instruction + " " + "C";
-                                break;
-                            case "11":
-                                instruction = instruction + " " + "D";
-                                break;
-                            default:
-                                break;
-                        }
-                        break;
-                    case "10":
-                        instruction = instruction + " " + "C";
-                        switch (op2) {
-                            case "00":
-                                instruction = instruction + " " + "A";
-                                break;
-                            case "01":
-                                instruction = instruction + " " + "B";
-                                break;
-                            case "10":
-                                instruction = instruction + " " + "C";
-                                break;
-                            case "11":
-                                instruction = instruction + " " + "D";
-                                break;
-                            default:
-                                break;
-                        }
-                        break;
-                    case "11":
-                        instruction = instruction + " " + "D";
-                        switch (op2) {
-                            case "00":
-                                instruction = instruction + " " + "A";
-                                break;
-                            case "01":
-                                instruction = instruction + " " + "B";
-                                break;
-                            case "10":
-                                instruction = instruction + " " + "C";
-                                break;
-                            case "11":
-                                instruction = instruction + " " + "D";
-                                break;
-                            default:
-                                break;
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-        } else {
-            if (instruction.equals("HALT")) {
-                return instruction;
-            } else {
-                String st = reg.getBinaryValueAsString();
-                String op = "" + st.charAt(4) + st.charAt(5) + st.charAt(6) + st.charAt(7);
-                if (ns == NumberingSystem.OPCbin) {
-                    instruction = instruction + " " + op;
-                } else if (ns == NumberingSystem.OPCdec) {
-                    switch (op) {
-                        case "0000":
-                            instruction = instruction + " " + "0";
-                            break;
-                        case "0001":
-                            instruction = instruction + " " + "1";
-                            break;
-                        case "0010":
-                            instruction = instruction + " " + "2";
-                            break;
-                        case "0011":
-                            instruction = instruction + " " + "3";
-                            break;
-                        case "0100":
-                            instruction = instruction + " " + "4";
-                            break;
-                        case "0101":
-                            instruction = instruction + " " + "5";
-                            break;
-                        case "0110":
-                            instruction = instruction + " " + "6";
-                            break;
-                        case "0111":
-                            instruction = instruction + " " + "7";
-                            break;
-                        case "1000":
-                            instruction = instruction + " " + "8";
-                            break;
-                        case "1001":
-                            instruction = instruction + " " + "9";
-                            break;
-                        case "1010":
-                            instruction = instruction + " " + "10";
-                            break;
-                        case "1011":
-                            instruction = instruction + " " + "11";
-                            break;
-                        case "1100":
-                            instruction = instruction + " " + "12";
-                            break;
-                        case "1101":
-                            instruction = instruction + " " + "13";
-                            break;
-                        case "1110":
-                            instruction = instruction + " " + "14";
-                            break;
-                        case "1111":
-                            instruction = instruction + " " + "15";
-                            break;
-                        default:
-                            break;
+            StringBuilder instruction = new StringBuilder(opcode.toString());
+            Map<String, String> lookup = new HashMap <>();
+                    lookup.put("00","A");
+                    lookup.put("01","B");
+                    lookup.put("10","C");
+                    lookup.put("11","D");
+            switch (opcode.getValue()) {
+                case 8 : //ADD   
+                case 9 : //SUB  
+                    String op1 = "" + st.charAt(4) + st.charAt(5);
+                    String op2 = "" + st.charAt(6) + st.charAt(7);
+                    if (ns == NumberingSystem.OPCbin) {
+                     instruction.append(" ").append(op1).append(" ").append(op2);
+                     return instruction.toString();
+                     }
+                    if (ns == NumberingSystem.OPCdec) {
+                    instruction.append(" ").append(lookup.get(op1)).append(" ").append(lookup.get(op2));
+                    return instruction.toString();
                     }
-                }
+                case 15: //HATL
+                    String op = "" + st.charAt(4) + st.charAt(5) + st.charAt(6) + st.charAt(7);
+                    if (ns == NumberingSystem.OPCbin) {
+                    instruction.append( " ").append(op);
+                    return instruction.toString();
+                    }
+                    if (ns == NumberingSystem.OPCdec) {
+                     byte opnumber = Byte.parseByte(op, 2);
+                     instruction.append(" ").append(opnumber);
+                     return instruction.toString();
+                    }
+                default:
+                    String opdefault = "" + st.charAt(4) + st.charAt(5) + st.charAt(6) + st.charAt(7);
+                    if (ns == NumberingSystem.OPCbin) {
+                    instruction.append(" ").append(opdefault);
+                    return instruction.toString();
+                    }
+                    if (ns == NumberingSystem.OPCdec) {
+                     instruction.append(" ").append(Integer.parseInt(opdefault,2));   
+                    }
             }
-        }
-        return instruction;
+        return instruction.toString();
     }
 
     public void fetch() {
